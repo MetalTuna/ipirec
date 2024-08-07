@@ -1,0 +1,1 @@
+=AVERAGEIFS(R:R, $AA:$AA, $B$24, $AB:$AB, $C$24, $AC:$AC, $D$24, $AD:$AD, $E$24, $AE:$AE, $F$24, $AF:$AF, $G$24, $AG:$AG, $H$24, $AJ:$AJ,$I$24, $AH:$AH, $J$24, $AI:$AI, $K$24, $Q:$Q, $B26)
