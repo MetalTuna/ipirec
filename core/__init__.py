@@ -41,6 +41,7 @@ from .eval import (
 )
 from .io import DirectoryPathValidator, InstanceIO
 from .visual import HeatmapFigure
+from .recommenders import ScoreBasedRecommender, ELABasedRecommender
 
 __all__ = [
     "AnalysisMethodType",
@@ -76,4 +77,7 @@ __all__ = [
     "TagsScoreRMSEEvaluator",
     "UserEntity",
     "ValidationType",
+    # Recommender
+    "ScoreBasedRecommender",
+    "ELABasedRecommender",
 ]
