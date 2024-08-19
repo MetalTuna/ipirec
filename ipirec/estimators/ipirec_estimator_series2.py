@@ -125,7 +125,8 @@ class IPIRecEstimatorSeries2(
         frob_norm: int = 1,
         default_voting: float = 0,
     ) -> dict:
-        return BiasedCorrelationEstimator().create_models_parameters(
+        return BiasedCorrelationEstimator.create_models_parameters(
+            # return BiasedCorrelationEstimator().create_models_parameters(
             score_iterations,
             score_learning_rate,
             score_generalization,
