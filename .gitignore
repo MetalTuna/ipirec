@@ -1,7 +1,6 @@
 
 # resources
 trunk/obs/*
-.DS_Store
 data/
 temp/
 resources/
@@ -169,4 +168,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 ipirec/.DS_Store
+.DS_Store
 .DS_Store

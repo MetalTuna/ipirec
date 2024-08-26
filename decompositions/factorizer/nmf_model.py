@@ -39,7 +39,7 @@ class NMFDecompositionModel(DecompositionModel):
     # end : public static override dict create_models_parameters()
 
     def _factorizer_def_(self) -> None:
-        print("[DecompositionModel] factorizer allocation")
+        print(f"[{type(self).__name__}] factorizer allocation")
         self._factorizer = NMF(
             n_components=self._dimension,
             init="random",
@@ -53,7 +53,7 @@ class NMFDecompositionModel(DecompositionModel):
     def _process_(self) -> None:
         if self.__is_preprocessed:
             return
-        print("[DecompositionModel] decomposition")
+        print(f"[{type(self).__name__}] decomposition")
         self.users_factors = self.factorizer.fit_transform(X=self.arr_dicisions)
         self.items_factors = self.factorizer.components_
         self.__is_preprocessed = True

@@ -1,7 +1,6 @@
 import numpy as np
 
-from core import BaseModel, BaseTrain, BaseAction
-from core.defines.decision_type import DecisionType
+from core import BaseModel, BaseTrain, BaseAction, DecisionType
 from ..factorizer import DecompositionModel
 
 
