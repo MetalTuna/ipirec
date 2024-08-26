@@ -169,4 +169,9 @@ cython_debug/
 #.idea/
 ipirec/.DS_Store
 .DS_Store
-.DS_Store
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
+.vs/ipirec/FileContentIndex/94875c69-66cc-4ba1-b99a-fe59c7d9e1a9.vsidx
+.vs/ipirec/v17/.wsuo
+.vs/ipirec/v17/DocumentLayout.backup.json
+.vs/ipirec/v17/DocumentLayout.json
