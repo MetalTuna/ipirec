@@ -49,6 +49,7 @@ class MovieLensRepository(BaseRepository):
         self,
         raw_data_path: str,
         db_src: Machine = Machine.E_MAC,
+        tmdb_auth_key_str: str = "YOUR_TMDB_API_PKEY",
     ) -> None:
         super().__init__(
             raw_data_path,
@@ -76,7 +77,7 @@ class MovieLensRepository(BaseRepository):
 
         self.__headers = {
             "accept": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYmNiNTQ2M2M2OGQyY2YxZmJlZmMyMGNmMTczZmFmYSIsInN1YiI6IjY1ZjI2ZDA2ZmJlMzZmMDE4NWYwYjljNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.s3mla-7p4jOcqafaaZmyyOtcZ_RYoY9aWNryUzmXgNA",
+            "Authorization": tmdb_auth_key_str,
         }
         """request_session_key (str)"""
         self.__list_of_decision_rules = [[0.5, 3.0], [3.0, 4.0], [4.0, 5.0]]
