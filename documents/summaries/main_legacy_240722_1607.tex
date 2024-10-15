@@ -1,0 +1,36 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithm}
+\usepackage[
+    noEnd=true,
+    % indLines=false
+    ]{algpseudocodex}
+\usepackage{graphicx}
+\usepackage{kotex}
+\usepackage[linkbordercolor={1 1 1}, colorlinks=true, allcolors=cyan]{hyperref}
+\hypersetup{
+    pdftitle={ip items recommendation using tags scores},
+    pdfauthor={T.G. Hwang},
+    pdfkeywords={data mining, linear regression, tags scores, preferences prediction}
+}
+
+\begin{document}
+\title{IP items recommender}
+\author{T.G. Hwang}
+% \author{T.G. Hwang (\href{mailto:taegyu.hwang@colley.kr}{\nolinkurl{e-mail}})}
+\maketitle
+
+\paragraph{Keywords}
+\begin{itemize}
+    \item data mining
+    \item linear regression
+    \item tags scores
+    \item preferences prediction
+\end{itemize}
+
+\tableofcontents \clearpage \newpage
+\input{models.tex}
+\clearpage \newpage
+\input{estimators.tex}
+
+\end{document}

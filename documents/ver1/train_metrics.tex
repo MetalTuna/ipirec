@@ -1,0 +1,14 @@
+\paragraph{feedback}
+\begin{gather}
+    \hat{r}(u,i)=\hat{r}(U_{i}^{+}) + \frac{\sum_{x}\sum_{y}\omega(u,x,y) \cdot sim_{I}(x,y) \cdot \Pr(x,y) \cdot |NT(u) \cap y|}{\sum_{x \in NT(u)} \sum_{y \in T(i)} |\omega(u,x,y) \cdot sim_{I}(x,y)|} \\
+    \hat{r}(U_{i}^{+})
+        =\frac{\sum_{v} \sum_{x} \sum_{y}\omega(u,x,y) \cdot sim_{U}(x,y) \cdot |NT(v) \cap y| \cdot \Pr(x,y)}
+        {\sum_{v \in U_{i}^{+}} \sum_{x \in NT(v)} \sum_{y \in T(i)} |\omega(u,x,y) \cdot sim_{U}(x,y)|\cdot \Pr(x,y)} \\
+    \epsilon(u,i) = \lambda \left(r(u,i) - \hat{r}(u,i)\right) \\
+    \omega(u,x,y)=\omega(u,x,y)+\epsilon (u,i)\frac{\sum_{x \in T(u)}\sum_{y \in T(i)}\omega(u,x,y)}{\sum_{x \in T(u)}\sum_{y \in T(i)} |\omega(u,x,y)|}
+\end{gather}
+
+\paragraph{objective function}
+\begin{gather}
+    \arg_{S, \Omega} \min_{(u,i) \in \mathbb{X}(a)} \left(r(u,i) - \hat{r}(u,i) \right)^{2} + \gamma \left(||\Omega||_{2} +||S||_{2}\right)^{-1} \label{eq:obj_func}
+\end{gather}

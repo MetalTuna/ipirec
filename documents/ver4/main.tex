@@ -1,0 +1,27 @@
+\documentclass{article}
+% \documentclass{report}
+
+\usepackage{amsmath,amssymb,amsfonts}
+% \usepackage{algorithmicx}
+\usepackage{xcolor}
+% \definecolor{cmt}{RGB}{47,212,146}
+% #d4922f
+% \definecolor{cmt}{RGB}{176,224,128}
+\definecolor{cmtclr}{RGB}{177,210,140}
+
+\usepackage{algorithm}
+\usepackage[noEnd=true, indLines=false]{algpseudocodex}
+\usepackage{graphicx}
+% \usepackage{pgfplots}
+\usepackage[allcolors=cyan, pdfborder={0 0 0}]{hyperref}
+\usepackage{kotex}
+
+\begin{document}
+% \begin{footnotesize}
+\input{train_procedures.tex}
+\input{tags_scores.tex}
+\input{train_metrics.tex}
+\clearpage \newpage
+\input{notations.tex}
+% \end{footnotesize}
+\end{document}

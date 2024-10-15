@@ -1,0 +1,28 @@
+\section{training}
+\subsection{preferences prediction and feedback}
+\begin{gather}
+    \hat{r}(u,i)=~ \frac{1}{|T(u)|}\sum_{x \in T(u)}\frac{\Pi_{y \in T(i)} \omega(u,x,y)s(x,y)}{\Pi_{y \in T(i)}|\omega(u,x,y)|} \\
+    \epsilon(u,i) =~ r(u,i) - \hat{r}(u,i) \\
+    s(x,y)=~ s(x,y)+\lambda^{S}
+    \eta \left(\epsilon(u,i) \Big(\frac{s(x,y)}{||S||_{2}} \Big) \right) + \gamma^{S} \frac{\bar{s}(x)+\bar{s}(y)}{2} \\
+    \eta(x)=~ \begin{cases}
+    x \geq 0,  2^{-1}x \\
+    \text{otherwise},  2x
+    \end{cases} \\
+    \omega(u,x,y)=~ \omega(u,x,y)
+    \frac{r(u,i)+\lambda^{\Omega} s(x,y)}
+    {\hat{r}(u,i)+\gamma^{\Omega}\mathbb{W}(u,i)} \\
+    \mathbb{W}(u,i)=~ \sum_{x\in NT(u)}\sum_{y \in T(i)} |\omega(u,x,y)| \\
+    s(x,y)=~ s(x,y)\frac
+    {r(u,i)+\lambda^{\Omega}\omega(u,x,y)}
+    {\hat{r}(u,i) +\gamma^{\Omega}\mathbb{S}(u,i)} \\
+    \mathbb{S}(u,i)=~ \sum_{NT(u)}\sum_{y \in T(i)} |s(x,y)|
+\end{gather}
+
+\subsection{objective functions}
+\begin{gather}
+    \mathcal{L}^{S}(\mathbb{X}(a)) =~ \min \text{RMSE}^{S}(\mathbb{X}(a), \hat{\mathbb{X}}) \\
+    \mathcal{L}^{\Omega}(\mathbb{X}(a)) =~ \min \text{RMSE}^{\Omega}(\mathbb{X}(a), \hat{\mathbb{X}}) \\
+    \mathcal{L}(\mathbb{X}(a)) =~ \frac{2 \mathcal{L}^{S}(\mathbb{X}(a)) \mathcal{L}^{\Omega}(\mathbb{X}(a))}{\mathcal{L}^{S}(\mathbb{X}(a)) + \mathcal{L}^{\Omega}(\mathbb{X}(a))} \\
+    \arg_{S, \Omega}~ \min \mathcal{L}(\mathbb{X}(a)) \label{eq:obj_func}
+\end{gather}

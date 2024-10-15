@@ -1,0 +1,49 @@
+\documentclass{article}
+% \documentclass{report}
+
+\usepackage{amsmath,amssymb,amsfonts}
+% \usepackage{algorithmicx}
+\usepackage{algorithm}
+\usepackage[noEnd=true, indLines=false]{algpseudocodex}
+\usepackage{graphicx}
+% \usepackage{pgfplots}
+\usepackage[allcolors=cyan, pdfborder={0 0 0}]{hyperref}
+\usepackage{kotex}
+
+\begin{document}
+\section{overall}
+\hspace{0.5cm}train. seq.
+\begin{eqnarray}
+    \begin{aligned}
+    V:~& V \Rightarrow S \\
+    V \rightarrow V:~& S \Rightarrow S(U), \Omega(U) \\
+    V \rightarrow L:~& S(U), \Omega(U) \Rightarrow S(U), \Omega(U) \\
+    V \rightarrow P:~& S(U), \Omega(U) \Rightarrow S(U), \Omega(U) \nonumber
+\end{aligned}
+\end{eqnarray}
+
+\section{prediction and training}
+\paragraph{scores}
+\begin{gather}
+s(x,y)=\text{co\_occur}(x,y)\cdot \Pr(x,y)\cdot 2^{-1}\sum_{d \in [U, I]}sim_{d}(x,y) \label{eq:tags_distances} \\
+\text{co\_occur}(x,y)=\frac{\ln(\min (|I(x,y)| + 1,~ \theta_{I}))}{\ln(\max_{x, y \in T} |I(x,y)|)};~\theta_{I}=20~(\text{optional}) \\
+\Pr(x,y)=|I(x)|^{-1}|I(x)\cap I(y)| \\ 
+sim_{U}(x,y)=\frac{\sum_{u \in U(x,y)}(r(u,x)-r(x))(r(u,y)-r(y))}{\sqrt{\sum_{u \in U(x,y)}(r(u,x)-r(x))^{2}\sum_{u \in U(x,y)}(r(u,y)-r(y))^{2}}} \\
+sim_{I}(x,y)=\frac{\sum_{i \in I(x,y)}(r(i,x)-r(x))(r(i,y)-r(y))}{\sqrt{\sum_{i \in I(x,y)}(r(i,x)-r(x))^{2}\sum_{i \in I(x,y)}(r(i,y)-r(y))^{2}}}
+\end{gather}
+
+\paragraph{feedback}
+\begin{gather}
+    \hat{r}^{S}(u,i)=\frac{\sum_{x \in NT(u)}\sum_{y \in T(i)} \omega(u,x,y)\cdot s(x,y) \cdot r(u,x)}{\sum_{x \in NT(u)}\sum_{y \in T(i)}|s(x,y)|} \\
+    \hat{r}^{\Omega}(u,i)=\frac{\sum_{x \in NT(u)}\sum_{y \in T(i)} \omega(u,x,y)\cdot s(x,y) \cdot r(u,x)}{\sum_{x \in NT(u)}\sum_{y \in T(i)}|\omega(u,x,y)|} \\
+    \epsilon^{*}(u,i) = \lambda \left(r(u,i) - \hat{r}^{*}(u,i)\right) \\
+    s(x,y)=s(x,y)+\epsilon^{*}(u,i)\frac{\sum_{x \in T(u)}\sum_{y \in T(i)}\omega(u,x,y)~s(x,y)}{\sum_{x \in T(u)}\sum_{y \in T(i)} |s(x,y)|} \\
+    \omega(u,x,y)=\omega(u,x,y)+\epsilon^{*}(u,i)\frac{\sum_{x \in T(u)}\sum_{y \in T(i)}\omega(u,x,y)~s(x,y)}{\sum_{x \in T(u)}\sum_{y \in T(i)} |\omega(u,x,y)|}
+\end{gather}
+
+\paragraph{objective function}
+\begin{gather}
+    \arg_{S, \Omega} \min_{(u,i) \in \mathbb{X}(a)} \left(r(u,i) - \hat{r}(u,i) \right)^{2} + \gamma \left(||\Omega||_{2} +||S||_{2}\right)^{-1} \label{eq:obj_func}
+\end{gather}
+
+\end{document}

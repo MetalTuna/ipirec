@@ -1,0 +1,26 @@
+\paragraph{scores}
+\begin{gather}
+    s(x,y)=
+        \text{co\_occur}(x,y)
+        \cdot \Pr(x,y)
+        \cdot 2^{-1}
+        \sum_{d \in [I, U]} sim_{d}(x,y) 
+        \label{eq:tags_distances} \\
+    \text{co\_occur}(x,y)=
+        \frac{\ln(\min (|I(x,y)| + 1,~ \theta_{I}))}
+        {\ln(\max_{x, y \in T} |I(x,y)|)};
+        ~\theta_{I}=20~(\text{optional}) \\
+    \Pr(x,y)=|I(x)|^{-1}|I(x)\cap I(y)| \\ 
+    sim_{I}(x,y)
+        =\frac{\sum_{i\in I(x,y)}(|U(i)| - \mu_{I}^{U}(x))(|U(i)| - \mu_{I}^{U}(y))}
+        {\sqrt{\sum_{i}(|U(i)| - \mu_{I}^{U}(x))^{2}\sum_{i}(|U(i)| - \mu_{I}^{U}(y))^{2}}} \\
+    sim_{U}(x,y)
+        =\frac{\sum_{u \in U(x, y)} (|I(u,x)| - \mu_{U}^{I}(x)) (|I(u,y)| - \mu_{U}^{I}(y))}
+        {\sqrt{\sum_{u} (|I(u,x)| - \mu_{U}^{I}(x))^{2}\sum_{u}(|I(u,y)| - \mu_{U}^{I})^{2}}} \\
+    \mu_{I}^{U}(x)=|I(x)|^{-1}\sum_{i \in I(x)} |U(i,x)| \\
+    \mu_{U}^{I}(x)=|U(x)|^{-1}\sum_{u \in U(x)} |I(u,x)| \\
+    I(u,x)=I(u) \cap I(x) \\
+    I(x,y)=I(x) \cap I(y) \\
+    U(i,x)=U(i) \cap U(x) \\
+    U(x,y)=U(x) \cap U(y)
+\end{gather}

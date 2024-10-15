@@ -1,0 +1,117 @@
+
+\section{IPIRecModel}
+\subsection{Series1}
+\begin{algorithm}
+    \caption{IPIRecModelSeries1}
+\begin{algorithmic}
+    \Require{No. of top n decisioned tags $NT(u)$, threshold of co-occurred items Freq. $\theta_{I}$}
+    \State{\Call{preprocess}{$NT(u), \theta_{I}$}}
+    \State{\Call{process}{ }}
+    \State{}
+\Function{preprocess}{$NT(u), \theta_{I}$}
+    \State{top\_n\_decisioned\_tags()}
+    \State{mean\_freq\_tags()}
+\EndFunction{}
+\State{}
+\Function{process}{ }
+    \State{item\_based\_tags\_corr()}
+    \Comment{in Equation \eqref{eq:pcc_co_occur_items}}
+    \State{user\_based\_tags\_corr()}
+    \Comment{in Equation \eqref{eq:pcc_co_occur_users}}
+    \State{tags\_score()}
+    \Comment{in Equation  \eqref{eq:tags_score}}
+\EndFunction{}
+\end{algorithmic}
+\end{algorithm}
+\begin{gather}
+sim_{U}(x,y)=
+    \frac{\sum_{u \in U(x) \cap U(y)}(r(u,x)-\bar{r}(x))(r(u,y)-\bar{r}(y))}
+    {\sqrt{\sum_{u}(r(u,x)-\bar{r}(x))^{2}\sum_{u}(r(u,y)-\bar{r}(y))^{2}}} \label{eq:pcc_co_occur_items} \\
+sim_{I}(x,y)=\frac{\sum_{i \in I(x) \cap I(y)}(r(i,x)-\bar{r}(x))(r(i,y)-\bar{r}(y))}{\sqrt{\sum_{i}(r(i,x)-\bar{r}(x))^{2}\sum_{i}(r(i,y)-\bar{r}(y))^{2}}} \label{eq:pcc_co_occur_users} \\
+s(x,y)=\text{CoOccur}(x,y)\cdot \Pr(x,y)\cdot \frac{1}{|\mathcal{S}|}\sum_{d \in \mathcal{S}}sim_{d}(x,y) \label{eq:tags_score} \\
+\text{CoOccur}(x,y)=\frac{\ln(\min (|I(x) \cap I(y)| + 1,~ \theta_{I}))}{\ln(\max_{x', y' \in T} |I(x') \cap I(y')|)};~\theta_{I}=20~(\text{optional})\nonumber \\
+\Pr(x,y)=|I(x)|^{-1}|I(x)\cap I(y)| \nonumber \\
+\bar{r}(x)=\frac{\sum_{u} |I(u) \cap I(V)|}{|U(x) \cap U(V)|}+\frac{\sum_{i} |U(i) \cap U(V)|}{|I(x) \cap I(V)|} \nonumber
+\end{gather}
+
+\clearpage \newpage
+\subsection{Series2}
+\begin{algorithm}
+    \caption{IPIRecModelSeries2}
+\begin{algorithmic}
+    \Require{No. of top n decisioned tags $NT(u)$, threshold of co-occurred items Freq. $\theta_{I}$}
+    \State{\Call{preprocess}{$NT(u), \theta_{I}$}}
+    \State{\Call{process}{ }}
+    \State{\Call{postprocess}{ }}
+    \State{}
+\State{}
+\Function{preprocess}{$NT(u), \theta_{I}$}
+    \State{top\_n\_decisioned\_tags()}
+    \State{mean\_freq\_tags()}
+\EndFunction{}
+\State{}
+\Function{process}{ }
+    \State{item\_based\_tags\_corr()}
+    \Comment{in Equation \eqref{eq:pcc_co_occur_items}}
+    \State{user\_based\_tags\_corr()}
+    \Comment{in Equation \eqref{eq:pcc_co_occur_users}}
+    \State{tags\_score()}
+    \Comment{in Equation  \eqref{eq:tags_score}}
+\EndFunction{}
+\State{}
+\Function{postprocess}{ }
+    \State{append\_tendencies()}
+    \Comment{in Equation \eqref{eq:append_tendencies}}
+\EndFunction{}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{gather}
+    S \leftarrow S + \mathbb{B}(\mathbb{X}(V),S), \label{eq:append_tendencies} \\
+    \bar{b}(\mathbb{X}(V),x,y) =~ \hat{b}^{U}(\mathbb{X}(V),x,y) + \hat{b}^{I}(\mathbb{X}(V),x,y) + \frac{b(\mathbb{X}(V),x) + b(\mathbb{X}(V),y)}{2} \nonumber \\
+    b(\mathbb{X}(V),t) =~ \frac{|R(t)|}{|R|} - \mu(\mathbb{X}(V)) \nonumber \\
+    \hat{b}^{U}(\mathbb{X}(V),x,y) =~ \frac{\sum_{u \in U(x) \cup U(y)} b(u)}{|U(x) \cup U(y)|} \nonumber\\
+    b(\mathbb{X}(V),u) =~ \frac{|I(u)|}{|I|} - \mu (\mathbb{X}(V)) \nonumber \\
+    \hat{b}^{I}(\mathbb{X}(V),x,y) =~ \frac{\sum_{i \in I(x) \cup I(y)} b(i)}{|I(x) \cup I(y)|} \nonumber\\
+    b(\mathbb{X}(V),i) =~ \frac{|U(i)|}{|U|} - \mu (\mathbb{X}(V)) \nonumber 
+\end{gather}
+
+\clearpage \newpage
+
+\subsection{Series3}
+\begin{algorithm}
+    \caption{IPIRecModelSeries3}
+    \begin{algorithmic}
+    \Require{training set $\mathbb{X}$, test set $\mathbb{Y}$} 
+    \State{$\rho = \text{corr}(\mathbb{X}(V)) $} \Comment{in Equation \eqref{eq:tags_dist}}
+    \State{$\mathcal{B} = \text{tendencies}(\mathbb{X}(V),\rho)$} \Comment{in Equation \eqref{eq:tendencies_scores}}
+    \State{$S = \rho + \mathcal{B}$} \Comment{in Equation \eqref{eq:tags_scores_rev}}
+\end{algorithmic}
+\end{algorithm}
+    
+\begin{gather}
+    % \rho(x,y)=~ J(x,y)\Pr(x,y) \Pi_{n \in \forall sim} sim_{n}(x,y) \label{eq:tags_dist}  \\
+    \rho(x,y)=~ J(x,y)\Pr(x,y) \Pi_{d \in \mathcal{S}} sim_{d}(x,y) \label{eq:tags_dist}  \\
+    J(x,y)=~ \frac{|I(x)\cap I(y)|}{|I(x)\cup I(y)|} \nonumber  \\
+    \Pr(x,y)=~ \frac{|I(x)\cap I(y)|}{|I(x)|} \nonumber \\ 
+    sim_{UB}(x,y)=~ 
+    \frac{\sum_{u\in U(x)\cup U(y)}|NT(u) \cap x| |NT(u) \cap y|}
+    {\sqrt{\sum_{u}|NT(u) \cap x|\sum_{u}|NT(u) \cap y|}} \nonumber \\
+    sim_{UF}(x,y)=~ 
+    \frac{\sum_{u \in U(x)\cup U(y)}|I(u)\cap I(x)| |I(u)\cap I(y)|}
+    {\sqrt{\sum_{u}|I(u)\cap I(x)|^{2}\sum_{u}|I(u)\cap I(y)|^{2}}} \nonumber \\
+    sim_{IB}(x,y)=~ 
+    \frac{\sum_{i\in I(x)\cup I(y)}|T(i)\cap x| |T(i) \cap y|}
+    {\sqrt{\sum_{i}|T(i)\cap x|^{2}\sum_{i}|T(i)\cap y|^{2}}} \nonumber \\ 
+    sim_{IF}(x,y)=~ 
+    \frac{\sum_{i\in I(x)\cup I(y)}\tau(x) \tau(y)}
+    {\sqrt{\sum_{i}\tau(x)^{2}\sum_{i}\tau(y)^{2}}} \nonumber \\
+    \tau(t)=~ |I(t)|^{-1}\sum_{i \in I(t)}|T(i)| \nonumber \\ 
+    \bar{b}(x,y) =~ \hat{b}^{U}(x,y) + \hat{b}^{I}(x,y) + \frac{b(x) + b(y)}{2} \label{eq:tendencies_scores} \\
+    b(t) =~ \frac{|R(t)|}{|R|} - \mu(\mathbb{X}) \nonumber \\
+    \hat{b}^{U}(x,y) =~ \frac{\sum_{u \in U(x) \cup U(y)} b(u)}{|U(x) \cup U(y)|} \nonumber \\
+    b(u) =~ \frac{|I(u)|}{|I|} - \mu (\mathbb{X}) \nonumber \\
+    \hat{b}^{I}(x,y) =~ \frac{\sum_{i \in I(x) \cup I(y)} b(i)}{|I(x) \cup I(y)|} \nonumber \\
+    b(i) =~ \frac{|U(i)|}{|U|} - \mu (\mathbb{X}) \nonumber \\
+    s(x,y) \leftarrow ~  \rho(x,y) + \bar{b}(x,y) \label{eq:tags_scores_rev}
+\end{gather}

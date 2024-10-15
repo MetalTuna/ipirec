@@ -1,0 +1,17 @@
+\section{overall}
+\begin{algorithm}[h]
+\caption{IPIRec(Rev4)}
+\begin{algorithmic}
+\Require{training set $\mathbb{X}$, test set $\mathbb{Y}$} 
+\State{$\rho = \text{corr}(\mathbb{X}(V)) $} \Comment{in Equation \eqref{eq:tags_distances}}
+\State{$\mathcal{B} = \text{tendencies}(\rho, \mathbb{X}(V))$} \Comment{in Equation \eqref{eq:tendencies_scores}}
+\State{$S = \rho + \mathcal{B}$} \Comment{in Equation \eqref{eq:tags_scores}}
+\State{$\Omega = \text{numpy.ones}(|U|, |T|, |T|)$}
+\For{$a \in [V, L, P]$}
+    % \State{$\mathbb{L} = [\infty, ]$}
+    \State{$S, \Omega = \arg_{S, \Omega} \min \mathcal{L}(\mathbb{X}(a))$}
+    \Comment{in Equation \eqref{eq:obj_func}}
+\EndFor{}
+\State{benchmark($S, \Omega, \mathbb{Y}$)}
+\end{algorithmic}
+\end{algorithm}

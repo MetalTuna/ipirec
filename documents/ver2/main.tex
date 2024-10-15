@@ -1,0 +1,36 @@
+\documentclass{article}
+% \documentclass{report}
+
+\usepackage{amsmath,amssymb,amsfonts}
+% \usepackage{algorithmicx}
+\usepackage{algorithm}
+\usepackage[
+    noEnd=true,
+    % indLines=false
+    ]{algpseudocodex}
+\usepackage{graphicx}
+% \usepackage{pgfplots}
+\usepackage[allcolors=cyan, pdfborder={0 0 0}]{hyperref}
+\usepackage{kotex}
+
+\begin{document}
+%% \clearpage \newpage
+
+\begin{gather}
+\epsilon(u,i) = r(u,i) - \hat{r}(u,i) \\
+%% 이건 전역화 점수
+w(x,y) = \frac{w + \eta \left(w(x,y) \epsilon(u,i) \lambda^{S} \gamma^{S} s(x,y)\right)}{\sum_{z \in T(i)} |w(x,z) s(x,z)|} \\
+\eta (x) = \begin{cases}
+x \geq 0 & 2^{-1}x \\
+\textbf{\text{otherwise}} & 2x
+\end{cases} \\
+S = S \cdot W \\
+%% 이건 개인화 점수
+\mathbb{W}(u) = \sum_{x \in NT(u)}\sum_{y \in T(i)} |\omega(u,x,y)| \\
+\omega(u,x,y) = \omega(u,x,y) \frac{r(u,i) + \lambda^{\Omega}s(x,y)}{\hat{r}(u,i) + \gamma^{\Omega} \mathbb{W}(u)}
+\end{gather}
+
+% \input{train_procedures.tex}
+% \input{tags_scores.tex}
+%\input{train_metrics.tex}
+\end{document}

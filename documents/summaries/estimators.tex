@@ -1,0 +1,212 @@
+\section{Estimators}
+
+\subsection{Series1}
+\begin{algorithm}
+\caption{IPIRecEstimatorSeries1}
+\begin{algorithmic}
+    \Require{$iter$}
+    \State{\Call{adjust\_tags\_score}{$\mathbb{X}(V)$}}
+    \For{$a \in [V, L, P]$}
+        \For{\_ \textbf{in} range($iter$)}
+            \State{\Call{training}{$\mathbb{X}(a)$}}
+        \EndFor{}
+    \EndFor{}
+\Function{adjust\_tags\_score}{$\mathbb{X}$}
+    \State{$W$ = numpy.ones($|T|, |T|$)}
+    \For{$r(u,i) \in \mathbb{X}$}
+        \State{$\hat{r}(u,i)$ = estimate($u, i$)}
+        \Comment{in Equation \eqref{eq:s1_estimate}}
+        \State{$W$ = feed\_back($r(u,i), \hat{r}(u,i), W$)}
+        \Comment{in Equation \eqref{eq:s1_feeback}}
+    \EndFor{}
+    \State{$S = S W$}
+\EndFunction{}
+\Function{training}{$\mathbb{X}$}
+    \For{$r(u,i) \in \mathbb{X}$}
+        \State{$\hat{r}(u,i)$ = estimate($u, i$)}
+        \Comment{in Equation \eqref{eq:s1_estimate}}
+        \State{$\Omega$ = feed\_back($r(u,i), \hat{r}(u,i), \Omega$)}
+        \Comment{in Equation \eqref{eq:s1_personalization}}
+    \EndFor{}
+\EndFunction{}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{gather}
+    \hat{r}(u,i) = \frac{\sum_{x}\sum_{y} \omega(u,x,y) s(x,y) \nu(u,y)}{\sum_{x \in NT(u)}\sum_{y \in T(i)} |\omega(u,x,y)|} \label{eq:s1_estimate} \\
+    \nu(u,y) = \begin{cases}
+    NT(u) \cap y = \phi & \text{Default voting} \\
+    \text{\textbf{otherwise}} & 1 
+    \end{cases} \nonumber \\
+    \epsilon(u,i) = r(u,i) - \hat{r}(u,i) \nonumber \\
+    w(x,y) = \frac{w + \eta \left(w(x,y) \epsilon(u,i) \lambda^{S} \gamma^{S} s(x,y)\right)}{\sum_{z \in T(i)} |w(x,z) s(x,z)|} \label{eq:s1_feeback} \\
+    \eta (x) = \begin{cases}
+    x \geq 0 & 2^{-1}x \\
+    \text{\textbf{otherwise}} & 2x
+    \end{cases} \nonumber \\
+    % S = S \cdot W  \nonumber\\
+    \mathbb{W}(u) = \sum_{x \in NT(u)}\sum_{y \in T(i)} |\omega(u,x,y)| \nonumber \\
+    \omega(u,x,y) = \omega(u,x,y) \frac{r(u,i) + \lambda^{\Omega}s(x,y)}{\hat{r}(u,i) + \gamma^{\Omega} \mathbb{W}(u)} \label{eq:s1_personalization}
+\end{gather}
+\clearpage \newpage
+
+\subsection{Series2}
+\begin{algorithm}
+    \caption{IPIRecEstimatorSeries2}
+    \begin{algorithmic}
+        \Require{$iter$}
+        \State{$\Omega$ = numpy.ones($|U|, |T|, |T|$)}
+        \State{\Call{adjust\_tags\_score}{$\mathbb{X}(V)$}}
+        \For{$a \in [V, L, P]$}
+            \For{\_ \textbf{in} range($iter$)}
+                \State{\Call{training}{$\mathbb{X}(a)$}}
+            \EndFor{}
+        \EndFor{}
+    \Function{adjust\_tags\_score}{$\mathbb{X}$}
+        \State{$W$ = numpy.ones($|T|, |T|$)}
+        \For{$r(u,i) \in \mathbb{X}$}
+            \For{$x \in NT(u)$}
+                \For{$y \in T(i)$}
+                    \State{$\hat{r}(u,i)$ = estimate($u, i$)}
+                    \Comment{in Equation \eqref{eq:s2_estimate}}
+                    \State{$W$ = feed\_back($r(u,i), \hat{r}(u,i), W$)}
+                    \Comment{in Equation \eqref{eq:s2_scores_feeback}}
+                \EndFor{}
+            \EndFor{}
+        \EndFor{}
+        \State{$S = S W$}
+    \EndFunction{}
+    \Function{training}{$\mathbb{X}$}
+        \For{$r(u,i) \in \mathbb{X}$}
+            \State{$\hat{r}(u,i)$ = estimate($u, i$)}
+            \Comment{in Equation \eqref{eq:s2_estimate}}
+            \State{$\Omega$ = fit\_weights($r(u,i), \hat{r}(u,i), S, \Omega$)}
+            \Comment{in Equation \eqref{eq:s2_w_personalization}}
+            \State{$S$ = fit\_scores($r(u,i), \hat{r}(u,i), S, \Omega$)}
+            \Comment{in Equation \eqref{eq:s2_s_personalization}}
+        \EndFor{}
+    \EndFunction{}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{gather}
+\hat{r}(u,i) = \frac{\sum_{x}\sum_{y} \omega(u,x,y) s(x,y) \nu(u,y)}{\sum_{x \in NT(u)}\sum_{y \in T(i)} |\omega(u,x,y)|} \label{eq:s2_estimate} \\
+\nu(u,y) = \begin{cases}
+NT(u) \cap y = \phi & DV \\
+\textbf{\text{otherwise}} & 1 
+\end{cases} \nonumber \\
+\epsilon(u,i) =~ r(u,i) - \hat{r}(u,i) \nonumber \\
+s(x,y)=~ s(x,y)+\lambda^{S}
+\eta \left(\epsilon(u,i) \Big(\frac{s(x,y)}{\left\lVert S \right\rVert _{2}} \Big) \right) + \gamma^{S} \frac{\bar{s}(x)+\bar{s}(y)}{2} \label{eq:s2_scores_feeback} \\
+\eta(x)=~ 
+\begin{cases}
+x \geq 0,  2^{-1}x \\
+\textbf{\text{otherwise}},  2x
+\end{cases} \nonumber \\
+\omega(u,x,y)=~ \omega(u,x,y)\frac{(r(u,i)+\alpha(\hat{r}(u,i)))+\lambda^{\Omega} s(x,y)}{(\hat{r}(u,i)+\alpha(\hat{r}(u,i)))+\gamma^{\Omega}\mathbb{W}(u,i)} \label{eq:s2_w_personalization} \\
+\alpha(x) = 
+\begin{cases}
+x = 0 & 1 \\
+\textbf{\text{otherwise}} & 0
+\end{cases} \nonumber \\ 
+\mathbb{W}(u,i)=~ \sum_{x \in NT(u)}\sum_{y \in T(i)} |\omega(u,x,y)| \nonumber \\
+s(x,y)= s(x,y)\frac{(r(u,i)+\alpha(\hat{r}(u,i)))+\lambda^{\Omega}\omega(u,x,y)}{(\hat{r}(u,i)+\alpha(\hat{r}(u,i))) +\gamma^{\Omega}\mathbb{S}(u,i)} \label{eq:s2_s_personalization} \\
+\mathbb{S}(u,i)=~ \sum_{NT(u)}\sum_{y \in T(i)} |s(x,y)| \nonumber 
+\end{gather}
+
+\clearpage \newpage
+\subsection{Series3}
+\begin{algorithm}[H]
+\caption{IPIRecEstimatorSeries3}
+\label{alg:rev_estimator}
+\begin{algorithmic}
+\Require{Train.Set. $\mathbb{X}$, main Seq. $\mathcal{A}^{\text{main}}$, post Seq. $\mathcal{A}^{\text{post}}$}
+\State{$\Omega \leftarrow$ np.ones(shape=($|U|, |T|, |T|$))}
+\State{$S$ = \Call{adjust\_scores}{$\mathbb{X}(V), S, \Omega$}}
+\For{$a \in \mathcal{A}^{\text{main}}$}
+    \State{$\mathcal{L}_{\min} = \infty$}
+    \While{True}
+        \State{$\mathbb{L}^{\Omega}, S, \Omega$ = \Call{fit\_weights}{$\mathbb{X}, a, S, \Omega$}}
+        \State{$\mathbb{L}^{S}, S, \Omega$ = \Call{fit\_scores}{$\mathbb{X}, a, S, \Omega$}}
+        \State{$\mathcal{L} = \frac{2 \mathbb{L}^{S}\mathbb{L}^{\Omega}}{\mathbb{L}^{S} + \mathbb{L}^{\Omega}}$}\Comment{in Equation \eqref{eq:harmonic_loss}}
+        \If{$\mathcal{L}_{\min} \geq \mathcal{L}$}
+            \State{$\mathcal{L}_{\min} = \mathcal{L}$}
+            \State{$S_{\min} = S$}
+            \State{$\Omega_{\min} = \Omega$}
+        \Else{}
+            \State{$\mathcal{L} = \mathcal{L}_{\min}$}
+            \State{$S=S_{\min}$}
+            \State{$\Omega = \Omega_{\min}$}
+            \State{\textbf{break}}
+        \EndIf{}
+    \EndWhile{}
+\EndFor{}
+\For{$a \in \mathcal{A}^{\text{post}}$}
+    \If{$a \neq V$}
+        \State{$\_, S, \Omega$ = \Call{fit\_scores}{$\mathbb{X}(V), S, \Omega$}}
+    \EndIf{}
+    \State{$\_, S, \Omega$ = \Call{fit\_scores}{$\mathbb{X}(a), S, \Omega$}}
+\EndFor{}
+\State{}
+\Function{adjust\_scores}{$\mathbb{X}, S, \Omega$}
+    \State{$\_, S, \_\_$ = \Call{fit\_scores}{$\mathbb{X}, V, S, \Omega$}}
+    \State{$\mathcal{B} = \text{tendencies}(\mathbb{X}, S)$} \Comment{in Equation \eqref{eq:tendencies_scores}}
+    \State{$S = S + \mathcal{B}$}
+    \State{$\_, S, \_\_$ = \Call{fit\_scores}{$\mathbb{X}, V, S, \Omega$}}
+    \State{\Return{$S$}}
+\EndFunction{}
+\Function{fit\_scores}{$\mathbb{X}, a, S, \Omega$}
+    \If{$a \neq V$}
+        % \State{$S, \Omega = \arg_{S', \Omega'} \min \text{RMSE}(\mathbb{X}(V), S, \Omega)$}
+        \State{$S, \Omega = \arg_{S', \Omega'} \min \mathbb{L}(\mathbb{X}(V), S, \Omega)$}
+    \EndIf{}
+    % \State{\Return{$\arg_{\mathcal{L}', S', \Omega'} \min \text{RMSE}(\mathbb{X}(a), S, \Omega)$}}
+    \State{\Return{$\arg_{\mathbb{L}', S', \Omega'} \min \mathbb{L}(\mathbb{X}(a), S, \Omega)$}}
+\EndFunction{}
+\Function{fit\_weights}{$\mathbb{X}, a, S, \Omega$}
+    % \State{$\mathcal{L}, S, \Omega = \arg_{\mathcal{L}', S', \Omega'} \min \text{RMSE}(\mathbb{X}(a), S, \Omega)$}
+    \State{$\mathbb{L}, S, \Omega = \arg_{\mathbb{L}', S', \Omega'} \min \mathbb{L}(\mathbb{X}(a), S, \Omega)$}
+    % \mathbb{L}(\mathbb{X}, S, \Omega)
+    \State{$\_, S, \Omega$ = \Call{fit\_scores}{$\mathbb{X}, a, S, \Omega$}}
+    \State{\Return{$\mathbb{L}, S, \Omega$}}
+\EndFunction{}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{gather}
+\hat{r}(u,i)=~ \frac{1}{|T(u)|}\sum_{x \in T(u)}\frac{\Pi_{y \in T(i)} \omega(u,x,y)s(x,y)}{\Pi_{y \in T(i)}|\omega(u,x,y)|} \label{eq:s3_estimate} \\
+\epsilon(u,i) =~ r(u,i) - \hat{r}(u,i) \nonumber \\
+s(x,y)=~ s(x,y)+\lambda^{S}
+\eta \left(\epsilon(u,i)
+\Big(\frac{s(x,y)}{\left\lVert S \right\rVert_{2}}
++\frac{\bar{s}(x)+\bar{s}(y)}{2}
+\Big) \right) \label{eq:s3_scores_feeback} \\
+\eta(x)=~ \begin{cases}
+x \geq 0 &  2^{-1}x \\
+\text{otherwise} &  2x
+\end{cases} \nonumber \\
+\omega(u,x,y)=~ \omega(u,x,y)
+\frac{r(u,i)+\lambda^{\Omega} s(x,y)}
+{\hat{r}(u,i)+\gamma^{\Omega}\mathbb{W}(u,i)} \nonumber \\
+\mathbb{W}(u,i)=~ \sum_{x\in NT(u)}\sum_{y \in T(i)} |\omega(u,x,y)| \nonumber \\
+s(x,y)=~ s(x,y)\frac
+{r(u,i)+\lambda^{\Omega}\omega(u,x,y)}
+{\hat{r}(u,i) +\gamma^{\Omega}\mathbb{S}(u,i)} \nonumber \\
+\mathbb{S}(u,i)=~ \sum_{NT(u)}\sum_{y \in T(i)} |s(x,y)| \nonumber  \\
+\mathbb{L}(\mathbb{X}, S, \Omega)=\text{RMSE}(\mathbb{X}, S, \Omega)=
+\sqrt{\frac{1}{|\mathbb{X}|}\sum_{(u,i) \in \mathbb{X}} \left(r(u,i) - \hat{r}(u,i) \right)^{2}}
+\label{eq:s3_loss} \\
+\mathbb{L}^{S}(\mathbb{X}(a), S, \Omega) = \min \text{RMSE}^{S}(\mathbb{X}(a), S, \Omega) \nonumber \\
+\mathbb{L}^{\Omega}(\mathbb{X}, S, \Omega) = \min \text{RMSE}^{\Omega}(\mathbb{X}(a), S, \Omega) \nonumber \\
+\mathcal{L}(\mathbb{X}(a), S, \Omega) = \frac{2 \mathbb{L}^{S}(\mathbb{X}(a), S, \Omega)\mathbb{L}^{\Omega}(\mathbb{X}(a), S, \Omega)}{\mathbb{L}^{S}(\mathbb{X}(a), S, \Omega)+\mathbb{L}^{\Omega}(\mathbb{X}(a), S, \Omega)}\label{eq:harmonic_loss} \\
+\min \mathcal{L}(\mathbb{X}, S, \Omega) \nonumber
+\end{gather}
+
+\subsection{Series4}
+\hspace{0.5cm} 식 \eqref{eq:s4_loss}를 사용한 알고리즘 \ref{alg:rev_estimator}으로 모델을 훈련함
+\begin{gather}
+\mathcal{F}(\mathbb{X}(a), S, \Omega)= \frac{|\mathbb{X}(a)|}{|U|^{2} |I|} \sum_{u \in U}\big( \frac{1}{|T(u)||T|} \sum_{x \in T(u)} \sum_{y \in T} \left( w(u,x,y)s(x,y) \right)^{2} \big)^{0.5} \nonumber \\
+\mathbb{L}(\mathbb{X}, S, \Omega)=\text{RMSE}(\mathbb{X}, S, \Omega) + \mathcal{F}(\mathbb{X}(a), S, \Omega) \label{eq:s4_loss}
+% \mathcal{L}^{S}(\mathbb{X}(a), S, \Omega) =~ \min \text{RMSE}^{S}(\mathbb{X}(a), S, \Omega) + \mathcal{F}(\mathbb{X}(a), S, \Omega) \nonumber \\
+% \mathcal{L}^{\Omega}(\mathbb{X}(a), S, \Omega) =~ \min \text{RMSE}^{\Omega}(\mathbb{X}(a), S, \Omega) + \mathcal{F}(\mathbb{X}(a), S, \Omega) \nonumber
+\end{gather}
