@@ -17,7 +17,8 @@
 |Rev4|Series3|ColleyDataSetRev [모듈](../colley/dataset/colley_dataset_rev.py)|IPIRecModelSeries3 [모듈](./models/ipirec_model_series3.py), [설명](./models/model_rev4.md)|IPIRecEstimatorSeries3 [모듈](./estimators/ipirec_estimator_series3.py), [설명](./estimators/estimator_rev4.md)|[ipynb](../ipynb/obs/rev4.ipynb)|
 |Rev4(Ver1)|Series4|ColleyDataSetRev [모듈](../colley/dataset/colley_dataset_rev.py)|IPIRecModelSeries3 [모듈](./models/ipirec_model_series3.py), [설명](./models/model_rev4.md)|IPIRecEstimatorSeries4 [모듈](./estimators/ipirec_estimator_series4.py), [설명](./estimators/estimator_rev4.md)|[ipynb](../ipynb/obs/rev4v1.ipynb)|
 
-- 훈련관련 사항들은 [이 문서](../assets/main.pdf)를 참고하세요.
+<!-- - 훈련관련 사항들은 [이 문서](../assets/main.pdf)를 참고하세요. -->
+- 훈련관련 사항들은 [이 문서](../documents/summaries/main.pdf)를 참고하세요.
 
 ## 모듈구성
 
